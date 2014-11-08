@@ -4,7 +4,7 @@
   for file in *.c; do
     echo -e "${file%%.c}: $file"
     echo -e "\tmkdir -p bin"
-    opts="$(grep '^// clang_opts: ' "$file" | cut -f2 -d:)"
+    opts="$(grep '^// clang_opts: ' "$file" | cut -f3- -d' ')"
     echo -e "\tclang $opts -Wall -pedantic -o bin/${file%%.c} $file"
     echo -e "\t./bin/${file%%.c}"
   done
