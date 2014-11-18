@@ -38,6 +38,8 @@ void AppendRow(struct Comb *comb, size_t row, size_t row_size) {
   assert(row < comb->rows);
   if (row < comb->rows-1) {
     *GetOffset(comb, row+1) = *GetOffset(comb, row) + row_size;
+  } else {
+    assert(comb->size == *GetOffset(comb, row) + row_size);
   }
 }
 
