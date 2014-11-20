@@ -36,10 +36,11 @@ void FreeComb(struct Comb *comb) {
 void AppendRow(struct Comb *comb, size_t row, size_t row_size) {
   assert(comb);
   assert(row < comb->rows);
+  size_t next_offset = *GetOffset(comb, row) + row_size;
   if (row < comb->rows-1) {
-    *GetOffset(comb, row+1) = *GetOffset(comb, row) + row_size;
+    *GetOffset(comb, row+1) = next_offset;
   } else {
-    assert(comb->size == *GetOffset(comb, row) + row_size);
+    assert(comb->size == next_offset);
   }
 }
 
