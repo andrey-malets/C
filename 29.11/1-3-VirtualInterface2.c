@@ -52,8 +52,11 @@ int main(void) {
   for (size_t i = 0; i != sizeof(stacks)/sizeof(stacks[0]); ++i)
     test_ops(stacks[i]);
 
-  for (size_t i = 0; i != sizeof(stacks)/sizeof(stacks[0]); ++i)
+  for (size_t i = 0; i != sizeof(stacks)/sizeof(stacks[0]); ++i) {
     ARROW0(stacks[i], deallocate);
+    stacks[i] = 0;
+  }
+
   return 0;
 }
 
