@@ -8,7 +8,8 @@ STACK_IMPL {
 };
 
 STACK_IMPL *STACK_F(allocate)(size_t size) {
-  STACK_IMPL *rv = malloc(sizeof(STACK_IMPL));
+  STACK_IMPL *rv = malloc(sizeof(STACK_IMPL) +
+                          size * sizeof(STACK_ELEM));
   if (rv) {
     rv->size = size;
     rv->pos = 0;
