@@ -26,6 +26,11 @@ void STACK_F(push)(STACK_IMPL *s, STACK_ELEM e) {
   s->data[s->pos++] = e;
 }
 
+STACK_ELEM STACK_F(top)(STACK_IMPL *s) {
+  assert(s && s->pos);
+  return s->data[s->pos - 1];
+}
+
 void STACK_F(pop)(STACK_IMPL *s) {
   assert(s && s->pos);
   --s->pos;
