@@ -35,3 +35,8 @@ void STACK_F(pop)(STACK_IMPL *s) {
   assert(s && s->pos);
   --s->pos;
 }
+
+int STACK_F(empty)(STACK_IMPL *s) {
+  assert(s);
+  return s->pos == 0;
+}
