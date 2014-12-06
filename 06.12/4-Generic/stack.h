@@ -5,7 +5,7 @@
 
 #define DECLARE_STACK(type) \
   STACK_OF(type); \
-  extern STACK_OF(type) *STACK_F(allocate, type)(); \
+  extern STACK_OF(type) *STACK_F(allocate, type)(size_t size); \
   extern void STACK_F(deallocate, type)(STACK_OF(type) *); \
   extern void STACK_F(push, type)(STACK_OF(type) *, type); \
   extern type STACK_F(top, type)(STACK_OF(type) *); \
