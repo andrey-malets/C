@@ -36,9 +36,6 @@ int main() {
     }
 
     for (size_t core = 0; core < CORE_COUNT; core++) {
-        size_t core_type = (core / 8) % 2;
-        if (core == 0 || core_type == 1) {
-            bench(core, array, array_size);
-        }
+        bench(core, array, array_size);
     }
 }
