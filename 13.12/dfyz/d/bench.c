@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <xmmintrin.h>
 
 #define FLOAT_COUNT 16
 
@@ -52,7 +51,6 @@ static void green35(float* array, size_t array_length, RunMode run_mode) {
         return;
     }
 
-    _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
     crunch_floats(0.0f, array);
 
     if (run_mode == RM_LAST_ITERATION) {
