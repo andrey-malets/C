@@ -1,4 +1,5 @@
 #include "yield.h"
+
 #include <stdio.h>
 
 YIELD_FUNC(first_ten_fibs) {

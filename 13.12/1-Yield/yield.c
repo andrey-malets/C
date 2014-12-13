@@ -1,5 +1,7 @@
+#include "conv.h"
 #include "yield.h"
 
+#include <assert.h>
 #include <stdlib.h>
 #include <ucontext.h>
 
@@ -9,22 +11,6 @@ struct yield_ctx {
   void *value;
   char stack[];
 };
-
-int get_high(void *ptr) {
-  unsigned long value = (unsigned long) ptr;
-  return value >> 32;
-}
-
-int get_low(void *ptr) {
-  unsigned long value = (unsigned long) ptr;
-  return value & 0xFFFFFFFFl;
-}
-
-void *make_ptr(int h, int l) {
-  unsigned high = h, low = l;
-  unsigned long lhigh = high, llow = low;
-  return (void *) (lhigh << 32 | llow);
-}
 
 struct yield_ctx *get_yield_ctx(int h, int l) {
   return make_ptr(h, l);
@@ -36,11 +22,14 @@ void yield_impl(struct yield_ctx *ctx, void *value) {
   ctx->value = 0;
 }
 
-struct yield_ctx *init_yield_ctx(void *buf,
-                                 size_t buf_size,
+struct yield_ctx *init_yield_ctx(void *buf, size_t buf_size,
                                  void (*yieldfn)()) {
+  assert(buf);
+  assert(buf_size > sizeof(struct yield_ctx));
+
   struct yield_ctx *rv = buf;
   rv->value = 0;
+
   getcontext(&rv->callee);
   rv->callee.uc_link = &rv->caller;
   rv->callee.uc_stack.ss_sp = &rv->stack;
