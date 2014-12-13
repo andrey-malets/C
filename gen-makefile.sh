@@ -26,6 +26,8 @@
 
         dir=$maybe_dir
         deps=()
+        prefix=
+        suffix=
         for file in "$dir"/*.c; do
             [[ -f "$file" ]] || continue;
             obj="bin/${file%%.c}.o"
@@ -35,6 +37,10 @@
             echo -e "$obj: $file ${fdeps[*]}"
             echo -e "\tmkdir -p bin/$dir"
             echo -e "\tclang $clang_opts -c -Wall -pedantic -o $obj $file"
+            if [[ "$file" == "$dir/main.c" ]]; then
+                prefix="$(grep '^// prefix: ' "$file" | cut -f3- -d' ')"
+                suffix="$(grep '^// suffix: ' "$file" | cut -f2- -d:)"
+            fi
             deps+=($obj)
         done
         binary="bin/$dir.bin"
@@ -43,6 +49,6 @@
 
         echo ".PHONY: $dir"
         echo -e "$dir: $binary"
-        echo -e "\t./$binary"
-    done
+        echo -e "\tbash -c \"${prefix}./$binary${suffix}\""
+        done
 } >> Makefile
