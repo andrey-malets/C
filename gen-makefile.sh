@@ -31,9 +31,10 @@
             obj="bin/${file%%.c}.o"
             fdeps=($(perl -n -e \
                 'if (/^#include "(.+)"$/) { print "'"$dir"'/".$1.$/; }' < $file))
+            clang_opts="$(grep '^// clang_opts: ' "$file" | cut -f3- -d' ')"
             echo -e "$obj: $file ${fdeps[*]}"
             echo -e "\tmkdir -p bin/$dir"
-            echo -e "\tclang -c -Wall -pedantic -o $obj $file"
+            echo -e "\tclang $clang_opts -c -Wall -pedantic -o $obj $file"
             deps+=($obj)
         done
         binary="bin/$dir.bin"
