@@ -10,8 +10,24 @@ struct yield_ctx {
   char stack[];
 };
 
+int get_high(void *ptr) {
+  unsigned long value = (unsigned long) ptr;
+  return value >> 32;
+}
+
+int get_low(void *ptr) {
+  unsigned long value = (unsigned long) ptr;
+  return value & 0xFFFFFFFFl;
+}
+
+void *make_ptr(int h, int l) {
+  unsigned high = h, low = l;
+  unsigned long lhigh = high, llow = low;
+  return (void *) (lhigh << 32 | llow);
+}
+
 struct yield_ctx *get_yield_ctx(int h, int l) {
-  return (void *)(((unsigned long)h) << 32 | ((unsigned long)l));
+  return make_ptr(h, l);
 }
 
 void yield_impl(struct yield_ctx *ctx, void *value) {
@@ -20,27 +36,17 @@ void yield_impl(struct yield_ctx *ctx, void *value) {
   ctx->value = 0;
 }
 
-struct yield_ctx *init_yield_ctx(size_t stack_size,
+struct yield_ctx *init_yield_ctx(void *buf,
+                                 size_t buf_size,
                                  void (*yieldfn)()) {
-  struct yield_ctx *rv = malloc(sizeof(struct yield_ctx) +
-                                stack_size);
-  if (rv) {
-    rv->value = 0;
-    getcontext(&rv->callee);
-    rv->callee.uc_link = &rv->caller;
-    rv->callee.uc_stack.ss_sp = &rv->stack;
-    rv->callee.uc_stack.ss_size = stack_size;
-    makecontext(&rv->callee,
-                yieldfn,
-                2,
-                (int)((long)rv >> 32),
-                (int)((long)rv & 0xFFFFFFFF));
-  }
+  struct yield_ctx *rv = buf;
+  rv->value = 0;
+  getcontext(&rv->callee);
+  rv->callee.uc_link = &rv->caller;
+  rv->callee.uc_stack.ss_sp = &rv->stack;
+  rv->callee.uc_stack.ss_size = buf_size - sizeof(struct yield_ctx);
+  makecontext(&rv->callee, yieldfn, 2, get_high(rv), get_low(rv));
   return rv;
-}
-
-void free_yield_ctx(struct yield_ctx *ctx) {
-  free(ctx);
 }
 
 void yield_swap(struct yield_ctx *ctx) {

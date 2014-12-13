@@ -12,7 +12,7 @@ YIELD_FUNC(first_ten_fibs) {
 }
 
 int main(void) {
-  FOR_EACH(unsigned, fibn, first_ten_fibs, 100,
+  FOR_EACH(unsigned, fibn, first_ten_fibs, 2000,
     printf("%u\n", fibn);
   )
 
