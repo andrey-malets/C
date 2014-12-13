@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 i=1
 while [ $i -lt 100000000 ]
 do
