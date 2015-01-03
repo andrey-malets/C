@@ -9,7 +9,7 @@
     clang_opts="$(grep '^// clang_opts: ' "$file" | cut -f3- -d' ')"
     prefix="$(grep '^// prefix: ' "$file" | cut -f3- -d' ')"
     suffix="$(grep '^// suffix: ' "$file" | cut -f2- -d:)"
-    echo -e "\tclang $clang_opts -Wall -pedantic -o bin/${file%%.c} $file"
+    echo -e "\tclang $clang_opts -Wall -g -pedantic -o bin/${file%%.c} $file"
     if ! [[ -z "$prefix" ]]; then
         echo -e "\tbash -c \"${prefix} ./bin/${file%%.c}${suffix}\""
     else
@@ -36,7 +36,7 @@
             clang_opts="$(grep '^// clang_opts: ' "$file" | cut -f3- -d' ')"
             echo -e "$obj: $file ${fdeps[*]}"
             echo -e "\tmkdir -p bin/$dir"
-            echo -e "\tclang $clang_opts -c -Wall -pedantic -o $obj $file"
+            echo -e "\tclang $clang_opts -g -c -Wall -pedantic -o $obj $file"
             if [[ "$file" == "$dir/main.c" ]]; then
                 prefix="$(grep '^// prefix: ' "$file" | cut -f3- -d' ')"
                 suffix="$(grep '^// suffix: ' "$file" | cut -f2- -d:)"
