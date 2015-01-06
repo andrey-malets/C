@@ -111,7 +111,7 @@ void process(STACK_OF(int) *stack, struct Token token) {
 int calculate() {
   STACK_OF(int) *stack = STACK_F(allocate, int)(10);
 
-  FOR_EACH(struct Token, token, collect, 3000,
+  FOR_EACH(struct Token, token, collect, 2048+32*1024,
     process(stack, token);
   );
 

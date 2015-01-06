@@ -1,9 +1,15 @@
+#ifdef __APPLE__
+#define _XOPEN_SOURCE
+#endif
+
 #include "conv.h"
 #include "yield.h"
 
 #include <assert.h>
 #include <stdlib.h>
 #include <ucontext.h>
+
+// clang_opts: -Wno-deprecated-declarations
 
 struct yield_ctx {
   ucontext_t caller;
@@ -34,6 +40,9 @@ struct yield_ctx *init_yield_ctx(void *buf, size_t buf_size,
   rv->callee.uc_link = &rv->caller;
   rv->callee.uc_stack.ss_sp = &rv->stack;
   rv->callee.uc_stack.ss_size = buf_size - sizeof(struct yield_ctx);
+#ifdef __APPLE__
+  assert(rv->callee.uc_stack.ss_size >= 32*1024);
+#endif
   makecontext(&rv->callee, yieldfn, 2, get_high(rv), get_low(rv));
   return rv;
 }
